@@ -15,7 +15,7 @@ function App() {
   const map = useRef(null);
   const [geoData, setGeoData] = useState({ type: "FeatureCollection", features: [] });
   const supercluster = new Supercluster({
-    radius: 20,
+    radius: 30,
     maxZoom: 16,
     minZoom: 3,
   });
@@ -47,24 +47,24 @@ function App() {
         source: "cluster-source",
         maxzoom: 16,
         paint: {
-          "heatmap-weight": ["interpolate", ["linear"], ["get", "frp"], 0, 0.2, 10, 0.4, 50, 1.5, 100, 2.0],
-          "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 1, 8, 2, 16, 3],
+          "heatmap-weight": ["interpolate", ["linear"], ["get", "point_count"], 0, 0.2, 10, 0.4, 50, 1.5, 100, 2.0],
+          "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 1, 16, 3],
           "heatmap-color": [
             "interpolate",
             ["linear"],
             ["heatmap-density"],
             0, "rgba(255,255,255,0)",
-            0.2, "yellow",
-            0.4, "orange",
-            0.6, "red",
-            0.8, "darkred"
+            0.2, "rgba(255, 234, 0, 0.5)",
+            0.4, "rgba(255, 136, 0, 0.5)",
+            0.6, "rgba(254, 0, 0, 0.5)",
+            0.8, "rgba(139, 0, 0, 0.5)"
           ],
-          "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 30, 8, 20, 16, 10]
+          "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 20, 8, 15, 16, 10]
         }
       });
 
       map.current.on('click', 'heatmap-layer', (e) => {
-        console.log(e)
+        // console.log(e)
         new mapboxgl.Popup()
           .setLngLat(e.lngLat)
           .setHTML("latitude : " + e.lngLat.lat + "</br>" + "longitude : " + e.lngLat.lng)
@@ -74,7 +74,6 @@ function App() {
 
       map.current.on("moveend", updateClusters);
     });
-
 
     return () => {
       if (map.current) map.current.remove();
